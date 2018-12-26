@@ -1,15 +1,23 @@
 {
+  // Имя и описание, версия. Все это будет видно в браузере в chrome://extensions/?id=<id расширения>
   "name": "Signer",
   "description": "Extension demo",
   "version": "0.0.1",
   "manifest_version": 2,
+
+  // Скрипты, которые будут исполнятся в background
   "background": {
     "scripts": ["background.js"]
   },
+
+  // Указание на html для popup
   "browser_action": {
     "default_title": "My Extension",
     "default_popup": "popup.html"
   },
+
+  // Контент скрипты. Здесь у нас одно правило: параллельно всему, что открыто через http или https мы запускаем
+  // contenscript context page с одним скриптом внутри. Запускать сразу по получении документа.
   "content_scripts": [
     {
       "matches": [
@@ -23,15 +31,17 @@
       "all_frames": true
     }
   ],
+  // Разрешен доступ к localStorage, вкладкам
   "permissions": [
     "storage",
-    "unlimitedStorage",
-    "clipboardWrite",
-    "idle",
-    "activeTab",
-    "webRequest",
-    "notifications",
-    "tabs"
+   // "unlimitedStorage",
+    //"clipboardWrite",
+    "idle"
+    //"activeTab",
+    //"webRequest",
+    //"notifications",
+    //"tabs"
   ],
+  // Здесь указываются ресурсы, к которым будет иметь доступ веб страница
   "web_accessible_resources": ["inpage.js"]
 }
