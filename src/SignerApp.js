@@ -4,13 +4,13 @@ export class SignerApp {
 
     popupApi(){
         return {
-            hello: cb => cb('world')
+            hello: cb => cb(null, 'world')
         }
     }
 
     pageApi(){
         return {
-            hello: cb => cb('world')
+            hello: cb => cb(null, 'world')
         }
     }
 
