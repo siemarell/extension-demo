@@ -16,5 +16,10 @@
     "copy-webpack-plugin": "^4.6.0",
     "webpack": "^4.28.2",
     "webpack-cli": "^3.1.2"
+  },
+  "dependencies": {
+    "dnode": "^1.2.2",
+    "post-message-stream": "^3.0.0",
+    "readable-stream": "^3.1.1"
   }
 }
