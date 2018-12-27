@@ -1,6 +1,6 @@
 import {extensionApi} from "./utils/extensionApi";
 import {PortStream} from "./utils/PortStream";
-import Dnode from 'dnode/browser';
+import {cbToPromise, setupDnode, transformMethods} from "./utils/setupDnode";
 
 const DEV_MODE = process.env.NODE_ENV !== 'production';
 
@@ -10,13 +10,12 @@ async function setupUi(){
     const backgroundPort = extensionApi.runtime.connect({name: 'popup'});
     const connectionStream = new PortStream(backgroundPort);
 
-    const dnode = Dnode();
-
-    connectionStream.pipe(dnode).pipe(connectionStream);
+    const api = {};
+    const dnode = setupDnode(connectionStream, api);
 
     const background = await new Promise(resolve => {
-        dnode.once('remote', api => {
-            resolve(api)
+        dnode.once('remote', remoteApi => {
+            resolve(transformMethods(cbToPromise, remoteApi))
         })
     });
 

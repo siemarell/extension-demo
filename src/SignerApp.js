@@ -1,24 +1,22 @@
-import Dnode from 'dnode/browser';
+import {setupDnode} from "./utils/setupDnode";
 
 export class SignerApp {
 
     popupApi(){
         return {
-            hello: cb => cb('world')
+            hello: async () => "world"
         }
     }
 
     pageApi(){
         return {
-            hello: cb => cb('world')
+            hello: async () => "world"
         }
     }
 
     connectPopup(connectionStream){
         const api = this.popupApi();
-        const dnode = Dnode(api);
-
-        connectionStream.pipe(dnode).pipe(connectionStream);
+        const dnode = setupDnode(connectionStream, api);
 
         dnode.on('remote', (remote) => {
             console.log(remote)
@@ -27,9 +25,7 @@ export class SignerApp {
 
     connectPage(connectionStream, origin){
         const api = this.popupApi();
-        const dnode = Dnode(api);
-
-        connectionStream.pipe(dnode).pipe(connectionStream);
+        const dnode = setupDnode(connectionStream, api);
 
         dnode.on('remote', (remote) => {
             console.log(origin);

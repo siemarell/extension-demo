@@ -1,5 +1,5 @@
 import PostMessageStream from 'post-message-stream';
-import Dnode from 'dnode/browser';
+import {cbToPromise, setupDnode, transformMethods} from "./utils/setupDnode";
 
 
 setupInpageApi().catch(console.error);
@@ -11,13 +11,12 @@ async function setupInpageApi() {
         target: 'content',
     });
 
-    const dnode = Dnode();
-
-    connectionStream.pipe(dnode).pipe(connectionStream);
+    const api = {};
+    const dnode = setupDnode(connectionStream, api);
 
     const pageApi = await new Promise(resolve => {
-        dnode.once('remote', api => {
-            resolve(api)
+        dnode.once('remote', remoteApi => {
+            resolve(transformMethods(cbToPromise, remoteApi))
         })
     });
 
