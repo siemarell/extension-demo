@@ -2,18 +2,27 @@ import {extensionApi} from "./utils/extensionApi";
 import {PortStream} from "./utils/PortStream";
 import {SignerApp} from "./SignerApp";
 
-const app = new SignerApp();
+const DEV_MODE = process.env.NODE_ENV !== 'production';
 
-extensionApi.runtime.onConnect.addListener(connectRemote);
+setupApp();
 
-function connectRemote(remotePort) {
-    const processName = remotePort.name;
-    const portStream = new PortStream(remotePort);
-    if (processName === 'contentscript'){
-        const origin = remotePort.sender.url
-        app.connectPage(portStream, origin)
-    }else{
-        app.connectPopup(portStream)
+function setupApp() {
+    const app = new SignerApp();
+
+    if (DEV_MODE) {
+        global.app = app;
+    }
+
+    extensionApi.runtime.onConnect.addListener(connectRemote);
+
+    function connectRemote(remotePort) {
+        const processName = remotePort.name;
+        const portStream = new PortStream(remotePort);
+        if (processName === 'contentscript') {
+            const origin = remotePort.sender.url;
+            app.connectPage(portStream, origin)
+        } else {
+            app.connectPopup(portStream)
+        }
     }
 }
-
