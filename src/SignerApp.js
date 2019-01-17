@@ -1,37 +1,39 @@
+import {observable, action} from 'mobx';
 import {setupDnode} from "./utils/setupDnode";
 
 export class SignerApp {
 
-    constructor(){
-
-        this.store = {
+    constructor(initState) {
+        const defaultState = {
             keys: [],
         };
-
+        this.store = observable.object({...defaultState, ...initState})
     }
 
-    addKey(key){
+    @action
+    addKey(key) {
         this.store.keys.push(key)
     }
 
-    removeKey(index){
-        this.store.keys.splice(index,1)
+    @action
+    removeKey(index) {
+        this.store.keys.splice(index, 1)
     }
 
-    popupApi(){
+    popupApi() {
         return {
             addKey: async (key) => this.addKey(key),
             removeKey: async (index) => this.removeKey(index)
         }
     }
 
-    pageApi(){
+    pageApi() {
         return {
             hello: async () => "world"
         }
     }
 
-    connectPopup(connectionStream){
+    connectPopup(connectionStream) {
         const api = this.popupApi();
         const dnode = setupDnode(connectionStream, api);
 
@@ -40,7 +42,7 @@ export class SignerApp {
         })
     }
 
-    connectPage(connectionStream, origin){
+    connectPage(connectionStream, origin) {
         const api = this.popupApi();
         const dnode = setupDnode(connectionStream, api);
 
