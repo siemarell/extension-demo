@@ -5,6 +5,7 @@ import {SignerApp} from "./SignerApp";
 import {loadState, saveState} from "./utils/localStorage";
 
 const DEV_MODE = process.env.NODE_ENV !== 'production';
+const IDLE_INTERVAL = 30;
 
 setupApp();
 
@@ -17,12 +18,22 @@ function setupApp() {
     }
 
     // Setup state persistence
-
     const localStorageReaction = reaction(
-        () => toJS(app.store),
+        () => ({
+            vault: app.store.vault
+        }),
         saveState
     );
 
+    // Lock on idle
+    extensionApi.idle.setDetectionInterval(IDLE_INTERVAL);
+    extensionApi.idle.onStateChanged.addListener(state => {
+        if (['locked', 'idle'].indexOf(state) > -1) {
+           app.lock()
+        }
+    });
+
+    // Connect to other contexts
     extensionApi.runtime.onConnect.addListener(connectRemote);
 
     function connectRemote(remotePort) {

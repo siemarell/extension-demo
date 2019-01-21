@@ -23,6 +23,7 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
+    "crypto-js": "^3.1.9-1",
     "dnode": "^1.2.2",
     "mobx": "^5.8.0",
     "post-message-stream": "^3.0.0",
