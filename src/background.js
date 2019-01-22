@@ -1,4 +1,4 @@
-import {reaction, toJS} from 'mobx';
+import {reaction} from 'mobx';
 import {extensionApi} from "./utils/extensionApi";
 import {PortStream} from "./utils/PortStream";
 import {SignerApp} from "./SignerApp";
@@ -18,11 +18,18 @@ function setupApp() {
     }
 
     // Setup state persistence
-    const localStorageReaction = reaction(
+    reaction(
         () => ({
             vault: app.store.vault
         }),
         saveState
+    );
+
+    // update badge
+    reaction(
+        () => app.store.newMessages.length > 0 ? app.store.newMessages.length.toString() : '',
+        text => extensionApi.browserAction.setBadgeText({text}),
+        {fireImmediately: true}
     );
 
     // Lock on idle

@@ -17,13 +17,16 @@ export class SignerApp {
                 return this.password == null
             },
             get keys() {
-                if (this.locked){
-                    throw new Error('App is locked')
+                if (this.locked) {
+                   return []
                 }
                 return SignerApp._decryptVault(this.vault, this.password)
             },
             get initialized() {
-                return this.vault !== undefined
+                return this.vault != null
+            },
+            get newMessages(){
+                return this.messages.filter(msg => msg.status === 'new')
             }
         })
 
@@ -34,6 +37,12 @@ export class SignerApp {
     @action
     initVault(password) {
         this.store.vault = SignerApp._encryptVault([], password)
+        this.store.password = password
+    }
+
+    @action
+    deleteVault(){
+        this.store.vault = null
     }
 
     @action
@@ -49,11 +58,13 @@ export class SignerApp {
 
     @action
     addKey(key) {
+        this._checkLocked()
         this.store.vault = SignerApp._encryptVault(this.store.keys.concat(key), this.store.password)
     }
 
     @action
     removeKey(index) {
+        this._checkLocked()
         this.store.vault = SignerApp._encryptVault([
                 ...this.store.keys.slice(0, index),
                 ...this.store.keys.slice(index + 1)
@@ -102,6 +113,7 @@ export class SignerApp {
 
     @action
     approve(id, keyIndex = 0) {
+        this._checkLocked();
         const message = this.store.messages.find(msg => msg.id === id);
         if (message == null) throw new Error(`No msg with id:${id}`);
         try {
@@ -125,13 +137,26 @@ export class SignerApp {
     }
 
     // public
+    getState() {
+        return {
+            keys: this.store.keys,
+            messages: this.store.newMessages,
+            initialized: this.store.initialized,
+            locked: this.store.locked
+        }
+    }
+
     popupApi() {
         return {
             addKey: async (key) => this.addKey(key),
             removeKey: async (index) => this.removeKey(index),
+
             lock: async () => this.lock(),
             unlock: async (password) => this.unlock(password),
+
             initVault: async (password) => this.initVault(password),
+            deleteVault: async () => this.deleteVault(),
+
             approve: async (id, keyIndex) => this.approve(id, keyIndex),
             reject: async (id) => this.reject(id)
         }
@@ -148,8 +173,17 @@ export class SignerApp {
         const api = this.popupApi();
         const dnode = setupDnode(connectionStream, api);
 
-        dnode.on('remote', (remote) => {
-            console.log(remote)
+        dnode.once('remote', (remote) => {
+            // Создаем reaction на изменения стейта, который сделает RPC вызов к UI и обновит стейт
+            const updateStateReaction = reaction(
+                () => this.getState(),
+                (state) => remote.updateState(state),
+                // Третьим аргументом можно передавать параметры. fireImmediatly значит что reaction выполниться первый раз сразу.
+                // Это необходимо, чтобы получить начальное состояние. Delay позволяет установить debounce
+                {fireImmediately: true, delay: 500}
+            );
+            dnode.once('end', () => updateStateReaction.dispose())
+
         })
     }
 
@@ -168,6 +202,11 @@ export class SignerApp {
         SignerApp._decryptVault(this.store.vault, password);
     }
 
+    _checkLocked(){
+        if (this.store.locked) {
+            throw new Error('App is locked')
+        }
+    }
 
     static _encryptVault(obj, pass) {
         const jsonString = JSON.stringify(obj)
