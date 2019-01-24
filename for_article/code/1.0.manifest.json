@@ -1,0 +1,48 @@
+{
+  // Имя и описание, версия. Все это будет видно в браузере в chrome://extensions/?id=<id расширения>
+  "name": "Signer",
+  "description": "Extension demo",
+  "version": "0.0.1",
+  "manifest_version": 2,
+
+  // Скрипты, которые будут исполнятся в background, их может быть несколько
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  // Какой html использовать для popup
+  "browser_action": {
+    "default_title": "My Extension",
+    "default_popup": "popup.html"
+  },
+
+  // Контент скрипты.
+  // У нас один объект: для всех url начинающихся с http или https мы запускаем
+  // contenscript context со скриптом contentscript.js. Запускать сразу по получении документа для всех фреймов
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "contentscript.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  // Разрешен доступ к localStorage и idle api
+  "permissions": [
+    "storage",
+    // "unlimitedStorage",
+    //"clipboardWrite",
+    "idle"
+    //"activeTab",
+    //"webRequest",
+    //"notifications",
+    //"tabs"
+  ],
+  // Здесь указываются ресурсы, к которым будет иметь доступ веб страница. Тоесть их можно будет запрашивать fetche'м или просто xhr
+  "web_accessible_resources": ["inpage.js"]
+}
