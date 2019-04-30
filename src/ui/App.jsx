@@ -5,7 +5,7 @@ import Keys from './components/Keys'
 import Sign from './components/Sign'
 import Unlock from './components/Unlock'
 
-@observer // У Компонета с этим декоратом будет автоматически вызван метод render, если будут изменены observable на которые он ссылается
+@observer // This decorator makes component subscribe to observables, accessed in 'render method', and re-render itself on changes
 export default class App extends Component {
 
     render() {

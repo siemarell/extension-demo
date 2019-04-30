@@ -9,20 +9,20 @@ const DEV_MODE = process.env.NODE_ENV !== 'production';
 setupUi().catch(console.error);
 
 async function setupUi() {
-    // Подключаемся к порту, создаем из него стрим
+    // Create connection port. Convert port to stream
     const backgroundPort = extensionApi.runtime.connect({name: 'popup'});
     const connectionStream = new PortStream(backgroundPort);
 
-    // Создаем пустой observable для состояния background'a
+    // Create empty observable for background state
     let backgroundState = observable.object({});
     const api = {
-        //Отдаем бекграунду функцию, которая будет обновлять observable
+        // Expose update function to background
         updateState: async state => {
             Object.assign(backgroundState, state)
         }
     };
 
-    // Делаем RPC объект
+    // Create RPC object
     const dnode = setupDnode(connectionStream, api);
     const background = await new Promise(resolve => {
         dnode.once('remote', remoteApi => {
@@ -30,14 +30,14 @@ async function setupUi() {
         })
     });
 
-    // Добавляем в background observable со стейтом
+    // Add background state to background RPC object
     background.state = backgroundState;
 
     if (DEV_MODE) {
         global.background = background;
     }
 
-    // Запуск интерфейса
+    // Interface app start
     await initApp(background)
 }
 
