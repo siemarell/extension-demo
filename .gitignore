@@ -7,6 +7,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 dist
+sandbox.test.js
 .DS_STORE
 # Runtime data
 pids

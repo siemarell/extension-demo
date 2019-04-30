@@ -6,20 +6,35 @@
   "scripts": {
     "start": "webpack --watch",
     "dist": "NODE_ENV=production webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --require babel-mocha.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/plugin-proposal-decorators": "^7.2.3",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "@types/react": "^16.7.20",
     "babel-loader": "^8.0.4",
+    "chai": "^4.2.0",
     "copy-webpack-plugin": "^4.6.0",
+    "mocha": "^5.2.0",
     "webpack": "^4.28.2",
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
+    "@waves/waves-transactions": "^3.0.19",
+    "crypto-js": "^3.1.9-1",
     "dnode": "^1.2.2",
+    "mobx": "^5.8.0",
+    "mobx-react": "^5.4.3",
     "post-message-stream": "^3.0.0",
-    "readable-stream": "^3.1.1"
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "readable-stream": "^3.1.1",
+    "uuid": "^3.3.2"
   }
 }
