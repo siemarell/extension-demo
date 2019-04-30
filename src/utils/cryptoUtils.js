@@ -1,6 +1,7 @@
 import CryptoJS from 'crypto-js'
 
-// Используется для осложнения подбора пароля перебором
+// This function is used to make brute-force attack difficult. For every password attacker has to calculate 5000(by default)
+// sha256 hashes.
 function strengthenPassword(pass, rounds = 5000) {
     while (rounds-- > 0){
         pass = CryptoJS.SHA256(pass).toString()
