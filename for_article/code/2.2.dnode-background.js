@@ -4,14 +4,15 @@ import {SignerApp} from "./SignerApp";
 
 const app = new SignerApp();
 
-// onConnect срабатывает при подключении 'процессов' (contentscript, popup, или страница расширения)
+// executes every time contentscript, popup or page connects
 extensionApi.runtime.onConnect.addListener(connectRemote);
 
 
 function connectRemote(remotePort) {
     const processName = remotePort.name;
     const portStream = new PortStream(remotePort);
-    // При установке соединения можно указывать имя, по этому имени мы и оппределяем кто к нам подлючился, контентскрипт или ui
+    // When we create connection, we can pass name. This way we can distinguish contentscript connection from ui connection
+    // and give them different api
     if (processName === 'contentscript'){
         const origin = remotePort.sender.url
         app.connectPage(portStream, origin)

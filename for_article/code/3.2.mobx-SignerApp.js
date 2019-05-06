@@ -4,13 +4,13 @@ import {setupDnode} from "./utils/setupDnode";
 export class SignerApp {
 
     constructor(initState = {}) {
-        // Внешне store так и останется тем же объектом, только теперь все его поля стали proxy, которые отслеживают доступ к ним
+        // Externally our store has the same api, but every field has become proxy. Proxies track property access
         this.store =  observable.object({
             keys: initState.keys || [],
         });
     }
 
-    // Методы, которые меняют observable принято оборачивать декоратором
+    // Methods, mutating observables, decorate with action
     @action
     addKey(key) {
         this.store.keys.push(key)

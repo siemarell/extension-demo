@@ -2,7 +2,7 @@ import {reaction, toJS} from 'mobx';
 import {extensionApi} from "./utils/extensionApi";
 import {PortStream} from "./utils/PortStream";
 import {SignerApp} from "./SignerApp";
-// Вспомогательные методы. Записывают/читают объект в/из localStorage виде JSON строки по ключу 'store'
+// Utility functions. Read/write object from localStorage as JSON string by key 'store'
 import {loadState, saveState} from "./utils/localStorage";
 
 const DEV_MODE = process.env.NODE_ENV !== 'production';
@@ -19,10 +19,10 @@ function setupApp() {
 
     // Setup state persistence
 
-    // Результат reaction присваивается переменной, чтобы подписку можно было отменить. Нам это не нужно, оставлено для примера
+    // Reaction returns disposer
     const localStorageReaction = reaction(
-        () => toJS(app.store), // Функция-селектор данных
-        saveState // Функция, которая будет вызвана при изменении данных, которые возвращает селектор
+        () => toJS(app.store), // Data selector
+        saveState // Function to call when selector data is changed
     );
 
     extensionApi.runtime.onConnect.addListener(connectRemote);

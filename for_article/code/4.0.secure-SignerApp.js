@@ -1,16 +1,16 @@
 import {observable, action} from 'mobx';
 import {setupDnode} from "./utils/setupDnode";
-// Утилиты для безопасного шифрования строк. Используют crypto-js
+// Utils for string encrypt/decrypt. Wrappers around crypto-js
 import {encrypt, decrypt} from "./utils/cryptoUtils";
 
 export class SignerApp {
     constructor(initState = {}) {
         this.store = observable.object({
-            // Храним пароль и зашифрованные ключи. Если пароль null - приложение locked
+            // We store password and encrypted keys. If password is null then app is locked
             password: null,
             vault: initState.vault,
 
-            // Геттеры для вычислимых полей. Можно провести аналогию с view в бд.
+            // Getters for computed properties. Good analogy is relational database view
             get locked(){
                 return this.password == null
             },
@@ -24,7 +24,7 @@ export class SignerApp {
             }
         })
     }
-    // Инициализация пустого хранилища новым паролем
+    // Init empty vault with new password
     @action
     initVault(password){
         this.store.vault = SignerApp._encryptVault([], password)
@@ -54,7 +54,7 @@ export class SignerApp {
         )
     }
 
-    ... // код подключения и api
+    ... // connection and api code
 
     // private
     _checkPassword(password) {
@@ -67,7 +67,7 @@ export class SignerApp {
         }
     }
 
-    // Методы для шифровки/дешифровки хранилища
+    // encrypt/decrypt methods
     static _encryptVault(obj, pass){
         const jsonString = JSON.stringify(obj)
         return encrypt(jsonString, pass)

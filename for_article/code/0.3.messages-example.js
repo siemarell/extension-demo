@@ -1,4 +1,4 @@
-// Обработчик для подключения 'своих' вкладок. Контент скриптов, popup или страниц расширения
+// Connection handler for other parts of the same extension. Content scripts, popup pages etc.
 chrome.runtime.onConnect.addListener(function(port) {
     console.assert(port.name === "knockknock");
     port.onMessage.addListener(function(msg) {
@@ -11,7 +11,7 @@ chrome.runtime.onConnect.addListener(function(port) {
     });
 });
 
-// Обработчик для подключения внешних вкладок. Других расширений или веб страниц, которым разрешен доступ в манифесте
-chrome.runtime.onConnect.addListener(function(port) {
+// External connection handler. Other extensions or web-pages
+chrome.runtime.onConnectExternal.addListener(function(port) {
     ...
 });

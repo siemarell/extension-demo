@@ -1,16 +1,16 @@
-// Сообщением может быть любой JSON сериализуемый объект
+// Any JSON-serializable object could be used as msg
 const msg = {a:'foo', b: 'bar'};
 
-// extensionId можно не указывать, если мы хотим послать сообщение 'своему' расширению (из ui или контент скрипта)
+// You can omit extensionId in case message is sent to 'parent' exntesion. E.g.: from UI or contentscript
 chrome.runtime.sendMessage(extensionId, msg);
 
-// Вот так выглядит обработчик
+// Handler
 chrome.runtime.onMessage.addListener((msg)=>console.log(msg))
 
-// Можно слать сообщения вкладкам зная их id
+// You can send message to any chrome tab by id
 chrome.tabs.sendMessage(tabId, msg)
 
-// Получить к вкладкам и их id можно например вот так
+// Access to tabs. E.g.: log current tab
 chrome.tabs.query(
     {currentWindow: true, active : true},
     function(tabArray){

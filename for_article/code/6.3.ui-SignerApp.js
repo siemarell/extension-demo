@@ -26,15 +26,14 @@ export class SignerApp {
         const dnode = setupDnode(connectionStream, api);
 
         dnode.once('remote', (remote) => {
-            // Создаем reaction на изменения стейта, который сделает вызовет удаленну процедуру и обновит стейт в ui процессе
+            // This reaction will call remote updateState function every time state changes. That way UI will be in sync with background
             const updateStateReaction = reaction(
                 () => this.getState(),
                 (state) => remote.updateState(state),
-                // Третьим аргументом можно передавать параметры. fireImmediatly значит что reaction выполниться первый раз сразу.
-                // Это необходимо, чтобы получить начальное состояние. Delay позволяет установить debounce
+                // fireImmediately - calls updateState for the first time. Delay - debounce function
                 {fireImmediately: true, delay: 500}
             );
-            // Удалим подписку при отключении клиента
+            // Dispose reaction on disconnect
             dnode.once('end', () => updateStateReaction.dispose())
 
         })

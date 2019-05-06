@@ -6,11 +6,11 @@ setupConnection();
 injectScript();
 
 function setupConnection(){
-    // Стрим к бекграунду
+    // Background stream over port
     const backgroundPort = extensionApi.runtime.connect({name: 'contentscript'});
     const backgroundStream = new PortStream(backgroundPort);
 
-    // Стрим к странице
+    // Page stream over postMessage API
     const pageStream = new PostMessageStream({
         name: 'content',
         target: 'page',

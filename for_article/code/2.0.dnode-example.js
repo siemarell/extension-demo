@@ -1,21 +1,21 @@
 import Dnode from "dnode/browser";
 
-// В этом примере условимся что клиент удаленно вызывает функции на сервере, хотя ничего нам не мешает сделать это двунаправленным
+// For the sake of simplicity only client calls remote functions on server. Nothing forbids us from making bidirectional rpc connection
 
-// Cервер
-// API, которое мы хотим предоставить
+// Server
+// API. Simple hello function
 const dnode = Dnode({
     hello: (cb) => cb(null, "world")
 })
-// Транспорт, поверх которого будет работать dnode. Любой nodejs стрим. В браузере есть бибилиотека 'readable-stream'
+// Transport stream for dnode.Could be any nodeJs stream. For browsers we use 'readable-stream' library, which implements nodejs streams
 connectionStream.pipe(dnode).pipe(connectionStream)
 
 
 
-// Клиент
-const dnodeClient = Dnode() // Вызов без агрумента значит что мы не предоставляем API на другой стороне
+// Client
+const dnodeClient = Dnode() // Create empty dnode, without remote api
 
-// Выведет в консоль world
+// On connect call remote function and log it output
 dnodeClient.once('remote', remote => {
     remote.hello(((err, value) => console.log(value)))
 })

@@ -10,23 +10,23 @@ export class SignerApp {
 
     @action
     newMessage(data, origin) {
-        // Для каждого сообщения создаем метаданные с id, статусом, выременем создания и тд.
+        // For every new message we create observable object with id, status, creation timestamp etc.
         const message = observable.object({
-            id: uuid(), // Идентификатор, используюю uuid
-            origin, // Origin будем впоследствии показывать в интерфейсе
+            id: uuid(), //I use uuid as id
+            origin, // Message origin will be shown in interface later
             data, //
-            status: 'new', // Статусов будет четыре: new, signed, rejected и failed
+            status: 'new', // Four statuses: new, signed, rejected и failed
             timestamp: Date.now()
         });
         console.log(`new message: ${JSON.stringify(message, null, 2)}`);
 
         this.store.messages.push(message);
 
-        // Возвращаем промис внутри которого mobx мониторит изменения сообщения. Как только статус поменяется мы зарезолвим его
+        // This promise will be resolved when status is changed
         return new Promise((resolve, reject) => {
-            reaction(
-                () => message.status, //Будем обсервить статус сообщеня
-                (status, reaction) => { // второй аргумент это ссылка на сам reaction, чтобы его можно было уничтожть внутри вызова
+            reaction(// Create mobX reaction
+                () => message.status, // which observes message status and invokes callback function when status is changed
+                (status, reaction) => { // we pass second argument to cb function. It is a reference to reaction itself, so we can safely dispose it
                     switch (status) {
                         case 'signed':
                             resolve(message.data);

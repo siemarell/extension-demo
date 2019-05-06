@@ -2,7 +2,7 @@ import {render} from 'react-dom'
 import App from './App'
 import React from "react";
 
-// Инициализируем приложение с background объектом в качест ве props
+// Init app. Pass background api object as props
 export async function initApp(background){
     render(
         <App background={background}/>,

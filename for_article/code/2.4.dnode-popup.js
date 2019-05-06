@@ -7,7 +7,7 @@ const DEV_MODE = process.env.NODE_ENV !== 'production';
 setupUi().catch(console.error);
 
 async function setupUi(){
-    // Также, как и в классе приложения создаем порт, оборачиваем в stream, делаем  dnode
+    // Get port. Convert port to stream. Create rpc over stream
     const backgroundPort = extensionApi.runtime.connect({name: 'popup'});
     const connectionStream = new PortStream(backgroundPort);
 
@@ -21,7 +21,7 @@ async function setupUi(){
         })
     });
 
-    // Делаем объект API доступным из консоли
+    // Make api object available for debug
     if (DEV_MODE){
         global.background = background;
     }

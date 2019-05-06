@@ -2,21 +2,21 @@ import Dnode from 'dnode/browser';
 
 export class SignerApp {
 
-    // Возвращает объект API для ui
+    // Returns API object for ui
     popupApi(){
         return {
             hello: cb => cb(null, 'world')
         }
     }
 
-    // Возвращает объет API для страницы
+    // Returns API object for page
     pageApi(){
         return {
             hello: cb => cb(null, 'world')
         }
     }
 
-    // Подключает popup ui
+    // Creates rpc connection for ui
     connectPopup(connectionStream){
         const api = this.popupApi();
         const dnode = Dnode(api);
@@ -28,7 +28,7 @@ export class SignerApp {
         })
     }
 
-    // Подключает страницу
+    // Creates rpc connection for page
     connectPage(connectionStream, origin){
         const api = this.popupApi();
         const dnode = Dnode(api);

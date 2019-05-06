@@ -6,7 +6,7 @@ setupInpageApi().catch(console.error);
 
 
 async function setupInpageApi() {
-    // Стрим к контентскрипту
+    // Contentscript stream
     const connectionStream = new PostMessageStream({
         name: 'page',
         target: 'content',
@@ -16,13 +16,13 @@ async function setupInpageApi() {
 
     connectionStream.pipe(dnode).pipe(connectionStream);
 
-    // Получаем объект API
+    // Get API object
     const pageApi = await new Promise(resolve => {
         dnode.once('remote', api => {
             resolve(api)
         })
     });
 
-    // Доступ через window
+    // Global access for debug
     global.SignerApp = pageApi;
 }

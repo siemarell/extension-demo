@@ -17,7 +17,6 @@ function setupApp() {
         global.app = app;
     }
 
-    // Теперь мы явно узываем поле, которому будет происходить доступ, reaction отработает нормально
     reaction(
         () => ({
             vault: app.store.vault
@@ -25,9 +24,9 @@ function setupApp() {
         saveState
     );
 
-    // Таймаут бездействия, когда сработает событие
+    // Idle timeout
     extensionApi.idle.setDetectionInterval(IDLE_INTERVAL);
-    // Если пользователь залочил экран или бездействовал в течение указанного интервала лочим приложение
+    // Lock app on idle or os lock
     extensionApi.idle.onStateChanged.addListener(state => {
         if (['locked', 'idle'].indexOf(state) > -1) {
             app.lock()
