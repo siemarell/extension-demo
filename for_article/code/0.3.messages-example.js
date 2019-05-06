@@ -12,6 +12,6 @@ chrome.runtime.onConnect.addListener(function(port) {
 });
 
 // Обработчик для подключения внешних вкладок. Других расширений или веб страниц, которым разрешен доступ в манифесте
-chrome.runtime.onConnect.addListener(function(port) {
+chrome.runtime.onConnectExternal.addListener(function(port) {
     ...
 });
